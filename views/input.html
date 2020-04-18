@@ -1,0 +1,9 @@
+<p><b>view:</b> {{data.views_name}}</p>
+{{#each data.viewfields}}
+  {{#if (isText fieldtype)}}
+    <input type="text" name="viewfields_id" value="{{viewfields_label}}">
+  {{/if}}
+
+<div>{{viewfields_label}}</div>
+{{/each}}
+
