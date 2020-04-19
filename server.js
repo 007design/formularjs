@@ -44,4 +44,21 @@ app.get("/view/:type/:id", (req, res) => {
   }
 });
 
+app.get("/edit/:type/:id", (req, res) => {
+  if (req.xhr) {
+    require('./api/get')(req.params.type,req.params.id,'edit').then(data => {
+      const template = handlebars.compile(fs.readFileSync('./views/'+req.params.type+'.html', 'utf-8'))({
+        view: req.params.type,
+        data: data[0]
+      });
+      res.send({
+        model: data[0],
+        view: template
+      });
+    });
+  } else {
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
 app.listen(8000);

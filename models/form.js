@@ -31,6 +31,14 @@ class Form extends Model {
       }
     }
   }
+
+  static get graphs() {
+    return {
+      edit: '[fields.options]',
+      input: '[viewfields.[fieldtype,viewoptions,triggers.[triggertype,triggerconditions,triggervalues],visibilityconditions.target]]',
+      dashboard: ''
+    }
+  }
 }
 
 module.exports = Form;
