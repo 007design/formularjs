@@ -1,11 +1,17 @@
 const express = require("express"),
   handlebars = require('handlebars'),
+  sass = require('node-sass'),
   path = require('path'),
   fs = require('fs'),
 	app = express();
 
-handlebars.registerHelper('isText', value => {
-  return value.fieldtypes_id === 1;
+handlebars.registerHelper('isText', field => {
+  return field.fieldtypes_id === 1;
+});
+handlebars.registerHelper('styles', type => {
+  return sass.renderSync({
+    file: path.join(__dirname, 'views', type+'.scss')
+  }).css;
 });
 
 // app.use("/", express.static(process.cwd()));

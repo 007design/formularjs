@@ -8,6 +8,7 @@
     "handlebars": "^4.7.6",
     "knex": "^0.20.8",
     "mysql": "^2.18.1",
+    "node-sass": "^4.13.1",
     "objection": "^2.1.2"
   },
   "devDependencies": {},
