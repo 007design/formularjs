@@ -1,0 +1,27 @@
+<form class="page-width" id="{{forms_id}}">
+  <div class="form-row">
+    <label for="forms_name">Form Name</label>
+    <input id="forms_name" type="text" name="forms_name" value="{{forms_name}}">
+  </div>
+  <hr>
+  {{#each fields}}
+    <div class="form-row">
+      <label for="field_{{fields_id}}">Field Name</label>
+      <input id="field_{{fields_id}}" type="text" name="fields.{{fields_id}}" value="{{fields_name}}">
+      {{#each options}}
+        <div class="option-row">
+          <input type="text" name="fields[{{fields_id}}].{{fieldoptions_id}}" value="{{fieldoptions_value}}">
+        </div>
+      {{/each}}
+      <div class="option-row">
+        <button data-add-option="{{fields_id}}">Add Option</button>
+      </div>
+    </div>
+  {{/each}}
+  <div class="form-row">
+    <button data-add-field>Add Field</button>
+  </div>
+  <div class="form-row">
+    <button data-save-form>Save Form</button>
+  </div>
+</form>

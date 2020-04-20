@@ -2,10 +2,13 @@
 <html>
 <head>
   <title>{{title}}</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
 
   <main></main>
+
+  <script type="text/javascript" src="scripts.js"></script>
 
   <script type="text/javascript">
     const request = new XMLHttpRequest();
@@ -15,13 +18,13 @@
         if (request.status === 200) {
           const resp = JSON.parse(request.response);
 
-          document.querySelector('main').innerHTML = resp.view;
-          const scripts = document.createElement('script');
-          scripts.src = "scripts.js";
-          scripts.onload = function() {
-            window.init(resp.model)
-          }
-          document.head.appendChild(scripts);
+          // document.querySelector('main').innerHTML = resp.view;
+          // const scripts = document.createElement('script');
+          // scripts.src = "scripts.js";
+          // scripts.onload = function() {
+            window.init(resp.model,resp.view)
+          // }
+          // document.head.appendChild(scripts);
         }
       }
     };

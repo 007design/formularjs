@@ -1,3 +1,4 @@
-  window.init = function(model) {
-    document.title = model.views_name
+  window.init = (model) => {
+    const viewName = model.views_name
+    document.title = viewName;
   }

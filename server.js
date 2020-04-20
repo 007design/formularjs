@@ -1,18 +1,23 @@
 const express = require("express"),
   handlebars = require('handlebars'),
   sass = require('node-sass'),
+  // babel =require("@babel/core"),
+  rollup = require('rollup'),
+  rollUpBabel = require('rollup-plugin-babel'),
+  rollUpCommonjs = require('@rollup/plugin-commonjs'),
+  rollUpNodeResolve = require('@rollup/plugin-node-resolve'),
   path = require('path'),
   fs = require('fs'),
 	app = express();
 
-handlebars.registerHelper('isText', field => {
-  return field.fieldtypes_id === 1;
-});
-handlebars.registerHelper('styles', type => {
-  return sass.renderSync({
-    file: path.join(__dirname, 'views', type+'.scss')
-  }).css;
-});
+// handlebars.registerHelper('isText', field => {
+//   return field.fieldtypes_id === 1;
+// });
+// handlebars.registerHelper('styles', (view, type) => {
+//   return sass.renderSync({
+//     file: path.join(__dirname, 'views', view, type+'.scss')
+//   }).css;
+// });
 
 // app.use("/", express.static(process.cwd()));
 
@@ -22,9 +27,46 @@ handlebars.registerHelper('styles', type => {
 //   });
 // });
 
-app.get("/view/:type/scripts.js", (req, res) => {
-  res.type('text/javascript')
-  res.sendFile(path.join(__dirname, 'views', req.params.type+'.js'));
+app.get("/:view/:type/scripts.js", (req, res) => {
+  async function build() {
+    // babel.transformFileSync(path.join(__dirname, 'views', req.params.view, req.params.type+'.js'),{
+    //   minified: true
+    // }).code
+    const bundle = await rollup.rollup({
+      input: path.join(__dirname, 'views', req.params.view, req.params.type+'.js'),
+      plugins: [
+        rollUpNodeResolve({
+          browser: true,
+          extensions: ['.js']
+        }),
+        rollUpCommonjs(),
+        rollUpBabel({
+          exclude: 'node_modules/**'
+        })
+      ]
+    });
+
+    const {output} = await bundle.generate({
+      format: 'iife'
+    });
+
+    return output[0].code;
+  }
+
+  build().then(output => {
+    res.type('text/javascript')
+    res.send(output)
+  })
+  // res.send(babel.transformSync(fs.readFileSync(path.join(__dirname, 'views', req.params.view, req.params.type+'.js'), 'utf-8'),{
+  //   minified: true
+  // }).code);
+});
+
+app.get("/:view/:type/styles.css", (req, res) => {
+  res.type('text/css')
+  res.send(sass.renderSync({
+    file: path.join(__dirname, 'views', req.params.view, req.params.type+'.scss')
+  }).css);
 });
 
 app.get("/view/:type/:id", (req, res) => {
@@ -47,13 +89,10 @@ app.get("/view/:type/:id", (req, res) => {
 app.get("/edit/:type/:id", (req, res) => {
   if (req.xhr) {
     require('./api/get')(req.params.type,req.params.id,'edit').then(data => {
-      const template = handlebars.compile(fs.readFileSync('./views/'+req.params.type+'.html', 'utf-8'))({
-        view: req.params.type,
-        data: data[0]
-      });
+      // const template = handlebars.compile()();
       res.send({
         model: data[0],
-        view: template
+        view: fs.readFileSync('./views/edit/'+req.params.type+'.html', 'utf-8')
       });
     });
   } else {

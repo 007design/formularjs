@@ -1,0 +1,47 @@
+$page-width: 1024px;
+
+$black: #333;
+$blue: #1e90ff;
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+body {
+  color: $black;
+  font-family: sans-serif;
+  margin-top: 50px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: $blue;
+
+  &:hover {
+    color: $blue;
+  }
+  &:visited {
+    color: $blue;
+  }
+  &:active {
+    color: $blue;
+  }
+}
+
+.page-width {
+  position: relative;
+  max-width: $page-width;
+  margin: 0 auto;
+}
+
+@mixin clearfix {
+  &:after {
+    display: table;
+    content: '';
+    clear: both;
+  }
+}
