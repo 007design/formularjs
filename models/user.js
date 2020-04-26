@@ -49,6 +49,12 @@ class User extends Model {
       }
     }
   }
+
+  static get graphs() {
+    return {
+      login: '[userviews]'
+    }
+  }
 }
 
 module.exports = User;

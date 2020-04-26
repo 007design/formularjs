@@ -24,7 +24,8 @@
       request.setRequestHeader('Content-Type', 'application/json');
       request.send(JSON.stringify({
         user: form.user.value,
-        pass: form.pass.value
+        pass: form.pass.value,
+        view: form.view.value
       }));
     });
   }

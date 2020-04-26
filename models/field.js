@@ -57,7 +57,7 @@ class Field extends Model {
           to: 'values.fields_id'
         }
       },
-      viewFields: {
+      viewfields: {
         relation: Model.HasManyRelation,
         modelClass: ViewField,
         join: {

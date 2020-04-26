@@ -1,8 +1,7 @@
 const { Model } = require('objection');
 const Knex = require('knex');
 
-module.exports = async function main(key, id, view, conditions) {
-
+module.exports = async function main(opts) {
 
   // Initialize knex.
   const knex = Knex({
@@ -19,21 +18,20 @@ module.exports = async function main(key, id, view, conditions) {
   // Give the knex instance to objection.
   Model.knex(knex);
 
-  const Obj = require('../models/'+key);
-  // const relations = Object.keys(Obj.relationMappings);
+  const Obj = require('../models/'+opts.key);
   const u = await Obj.query()
     .modify(function(queryBuilder) {
-      if (id) {
-        queryBuilder.where(Obj.idColumn, id);
+      if (opts.id) {
+        queryBuilder.where(Obj.idColumn, opts.id);
       }
-      if (conditions)
-        for (let a=0; a<conditions.length; a++) {
-          queryBuilder.where(conditions[a][0], conditions[a][1]);
+      if (opts.conditions)
+        for (let a in opts.conditions) {
+          queryBuilder.where(a, opts.conditions[a]);
         }
-      if (view)
+      if (opts.view)
         queryBuilder
           // .allowGraph(Obj.views[view])
-          .withGraphFetched(Obj.graphs[view]);
+          .withGraphFetched(Obj.graphs[opts.view]);
     })
 
   knex.destroy()
