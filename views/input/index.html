@@ -3,8 +3,22 @@
 <p><b>view:</b> {{data.views_name}}</p>
 {{#each data.viewfields}}
   {{#if (isText fieldtype)}}
-    <input type="text" name="viewfields_id" value="{{viewfields_label}}" id="field_{{viewfields_id}}">
+    <input type="text" name="{{viewfields_id}}" value="{{viewfields_label}}" id="field_{{viewfields_id}}">
   {{/if}}
-
-<div>{{viewfields_label}}</div>
+  {{#if (isSelect fieldtype)}}
+    <select name="{{viewfields_id}}" id="field_{{viewfields_id}}">
+      {{#each viewoptions}}
+        <option value="{{viewoptions_value}}">{{viewoptions_value}}</option>
+      {{/each}}
+    </select>
+  {{/if}}
+  {{#if (isCheckbox fieldtype)}}
+      {{#each viewoptions}}
+        <label>
+          <input type="checkbox" name="{{viewfields_id}}" value="{{viewoptions_value}}" id="field_{{viewfields_id}}">
+          {{viewoptions_value}}
+        </label>
+      {{/each}}
+    {{/if}}
+  <div>{{viewfields_label}}</div>
 {{/each}}

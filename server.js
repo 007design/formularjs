@@ -12,8 +12,24 @@ const express = require("express"),
   fs = require('fs'),
 	app = express();
 
+const sendLogin = res => {
+  const template = handlebars.compile(fs.readFileSync('./views/login/index.html', 'utf-8'))({
+    view: 'login'
+  });
+  res.send({
+    view: template,
+    model: {views_name: "Login"}
+  });
+};
+
 handlebars.registerHelper('isText', field => {
   return field.fieldtypes_id === 1;
+});
+handlebars.registerHelper('isSelect', field => {
+  return field.fieldtypes_id === 2;
+});
+handlebars.registerHelper('isCheckbox', field => {
+  return field.fieldtypes_id === 3;
 });
 handlebars.registerHelper('styles', view => {
   return sass.renderSync({
@@ -28,8 +44,6 @@ app.use(session({
 }))
 app.use(bodyParser.json());
 
-// app.use("/", express.static(process.cwd()));
-
 // app.get("/get/:type/:id/:view?", (req, res) => {
 //   require('./api/get')(req.params.type,req.params.id,req.params.view).then(data => {
 //     res.send(data);
@@ -42,9 +56,6 @@ app.get("/:view/:type/scripts.js", (req, res) => {
     req.params.type = "login";
 
   async function build() {
-    // babel.transformFileSync(path.join(__dirname, 'views', req.params.view, req.params.type+'.js'),{
-    //   minified: true
-    // }).code
     const bundle = await rollup.rollup({
       input: path.join(__dirname, 'views', req.params.type, 'index.js'),
       plugins: [
@@ -69,10 +80,7 @@ app.get("/:view/:type/scripts.js", (req, res) => {
   build().then(output => {
     res.type('text/javascript')
     res.send(output)
-  })
-  // res.send(babel.transformSync(fs.readFileSync(path.join(__dirname, 'views', req.params.view, req.params.type+'.js'), 'utf-8'),{
-  //   minified: true
-  // }).code);
+  });
 });
 
 app.get("/:view/:type/styles.css", (req, res) => {
@@ -89,15 +97,9 @@ app.get("/:view/:type/styles.css", (req, res) => {
 app.get("/view/:type/:id", (req, res) => {
   if (req.xhr) {
     let sess = req.session;
-    if (!sess.user) {
-      const template = handlebars.compile(fs.readFileSync('./views/login/index.html', 'utf-8'))({
-        view: 'login'
-      });
-      res.send({
-        view: template,
-        model: {views_name: "Login"}
-      });
-    } else
+    if (!sess.user)
+      sendLogin(res);
+    else
       require('./api/get')('view',req.params.id,req.params.type).then(data => {
         const template = handlebars.compile(fs.readFileSync('./views/'+req.params.type+'/index.html', 'utf-8'))({
           view: req.params.type,
@@ -115,13 +117,17 @@ app.get("/view/:type/:id", (req, res) => {
 
 app.get("/edit/:type/:id", (req, res) => {
   if (req.xhr) {
-    require('./api/get')(req.params.type,req.params.id,'edit').then(data => {
-      // const template = handlebars.compile()();
-      res.send({
-        model: data[0],
-        view: fs.readFileSync('./views/'+req.params.type+'/index.html', 'utf-8')
+    let sess = req.session;
+    if (!sess.user)
+      sendLogin(res);
+    else
+      require('./api/get')(req.params.type,req.params.id,'edit').then(data => {
+        // const template = handlebars.compile()();
+        res.send({
+          model: data[0],
+          view: fs.readFileSync('./views/'+req.params.type+'/index.html', 'utf-8')
+        });
       });
-    });
   } else {
     res.sendFile(path.join(__dirname, 'index.html'));
   }
@@ -130,9 +136,6 @@ app.get("/edit/:type/:id", (req, res) => {
 app.post("/login", (req, res) => {
   let sess = req.session;
   sess.user = req.body.user;
-
-  console.log(sess)
-  console.log(req.body)
 
   res.send({})
 });
