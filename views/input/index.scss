@@ -1,7 +1,33 @@
-main {
-  color: blue;
+@import '../base/boilerplate';
 
-  input {
-    background-color: green;
+main {
+  .form-row {
+    margin-bottom: 10px;
+
+    input[type="text"], select {
+      border: 1px solid black;
+      height: 30px;
+      padding-left: 6px;
+    }
+
+    label.field-label {
+      display: block;
+
+      @media (min-width: $tablet) {
+        display: inline-block;
+      }
+    }
+
+    .checkbox-group {
+      input {}
+      label {}
+    }
+
+    .radio-group {
+      input {}
+      label {}
+    }
+
+    .error-message {}
   }
 }

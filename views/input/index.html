@@ -1,24 +1,46 @@
 <style type="text/css">{{styles 'input'}}</style>
 
-<p><b>view:</b> {{data.views_name}}</p>
-{{#each data.viewfields}}
-  {{#if (isText fieldtype)}}
-    <input type="text" name="{{viewfields_id}}" value="{{viewfields_label}}" id="field_{{viewfields_id}}">
-  {{/if}}
-  {{#if (isSelect fieldtype)}}
-    <select name="{{viewfields_id}}" id="field_{{viewfields_id}}">
-      {{#each viewoptions}}
-        <option value="{{viewoptions_value}}">{{viewoptions_value}}</option>
-      {{/each}}
-    </select>
-  {{/if}}
-  {{#if (isCheckbox fieldtype)}}
-      {{#each viewoptions}}
-        <label>
-          <input type="checkbox" name="{{viewfields_id}}" value="{{viewoptions_value}}" id="field_{{viewfields_id}}">
-          {{viewoptions_value}}
-        </label>
-      {{/each}}
-    {{/if}}
-  <div>{{viewfields_label}}</div>
-{{/each}}
+<form id="submit_form">
+  {{#each data.viewfields}}
+    <div class="form-row" data-form-control="{{viewfields_id}}">
+      {{#if (isText fieldtype)}}
+        <label class="field-label" for="field_{{viewfields_id}}">{{viewfields_label}}</label>
+        <input type="text" name="{{viewfields_id}}" value="" id="field_{{viewfields_id}}"{{#viewfields_required}} data-required{{/viewfields_required}}>
+      {{/if}}
+      {{#if (isSelect fieldtype)}}
+        <label class="field-label" for="field_{{viewfields_id}}">{{viewfields_label}}</label>
+        <select name="{{viewfields_id}}" id="field_{{viewfields_id}}"{{#viewfields_required}} data-required{{/viewfields_required}}>
+          {{#each viewoptions}}
+            <option value="{{viewoptions_value}}">{{viewoptions_value}}</option>
+          {{/each}}
+        </select>
+      {{/if}}
+      {{#if (isCheckbox fieldtype)}}
+        <div class="field-label">{{viewfields_label}}</div>
+        <div class="checkbox-group">
+          {{#each viewoptions}}
+            <div class="form-control">
+              <input type="checkbox" name="{{viewfields_id}}_{{viewoptions_id}}" value="{{viewoptions_value}}" id="field_{{viewfields_id}}_{{viewoptions_id}}"{{#viewfields_required}} data-required{{/viewfields_required}}>
+              <label for="field_{{viewfields_id}}_{{viewoptions_id}}">{{viewoptions_value}}</label>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if (isRadio fieldtype)}}
+        <div class="field-label">{{viewfields_label}}</div>
+        <div class="radio-group">
+          {{#each viewoptions}}
+            <div class="form-control">
+              <input type="radio" name="{{viewfields_id}}" value="{{viewoptions_value}}" id="field_{{viewfields_id}}_{{viewoptions_id}}"{{#viewfields_required}} data-required{{/viewfields_required}}>
+              <label for="field{{viewfields_id}}_{{viewoptions_id}}">{{viewoptions_value}}</label>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+      <div class="error-message" data-error="{{viewfields_id}}"></div>
+    </div>
+  {{/each}}
+  <div class="form-row">
+    <button type="submit">Submit</button>
+  </div>
+</form>

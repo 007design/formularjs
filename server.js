@@ -54,6 +54,9 @@ handlebars.registerHelper('isSelect', field => {
 handlebars.registerHelper('isCheckbox', field => {
   return field.fieldtypes_id === 3;
 });
+handlebars.registerHelper('isRadio', field => {
+  return field.fieldtypes_id === 4;
+});
 handlebars.registerHelper('styles', view => {
   return sass.renderSync({
     file: path.join(__dirname, 'views', view, 'index.scss')
@@ -127,7 +130,7 @@ app.get("/view/:type/:id", (req, res) => {
         let data;
         if (!ok)
           return sendError(res, 'insufficient access');
-        else            
+        else
           data = await require('./api/get')({
             key: 'view',
             id: req.params.id,
@@ -191,7 +194,7 @@ app.post("/login", (req, res) => {
       result.status = "invalid user"
     else {
       sess.user = data[0].users_id;
-      
+
       if (req.body.view)
         data[0].userviews.forEach(userview => {
           if (userview.views_id === parseInt(req.body.view)) {
