@@ -1,4 +1,4 @@
-import * as handlebars from '../../node_modules/handlebars/dist/handlebars.min.js';
+import * as handlebars from '../../../node_modules/handlebars/dist/handlebars.min.js';
 window.Handlebars = handlebars.default;
 
 window.init = function(model, view) {

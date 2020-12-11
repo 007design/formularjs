@@ -96,7 +96,7 @@ class View extends Model {
 
   static get graphs() {
     return {
-      input: '[viewfields.[fieldtype,viewoptions,triggers.[triggertype,triggerconditions,triggervalues],visibilityconditions.target]]',
+      input: '[viewfields.[fieldtype,viewoptions,field.options,triggers.[triggertype,triggerconditions,triggervalues],visibilityconditions.target]]',
       edit: '',
       dashboard: ''
     }
